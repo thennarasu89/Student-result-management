@@ -1,15 +1,10 @@
-package com.kashvillan.studentresult.entity;
+package com.kashvillan.studentresult.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
-@Entity
-public class Student {
-	@Id
+public class StudentResponseDto {
 	private Long regNo;
-	
 	private String name;
 	private String assignedClass;
+	
 	public Long getRegNo() {
 		return regNo;
 	}

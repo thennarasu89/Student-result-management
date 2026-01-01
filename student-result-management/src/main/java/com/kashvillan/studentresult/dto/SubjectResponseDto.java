@@ -1,29 +1,20 @@
-package com.kashvillan.studentresult.entity;
+package com.kashvillan.studentresult.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
-@Entity
-public class Subject {
-	@Id
+public class SubjectResponseDto {
 	private Long subCode;
-	
 	private String subjectName;
-
 	public Long getSubCode() {
 		return subCode;
 	}
-
 	public void setSubCode(Long subCode) {
 		this.subCode = subCode;
 	}
-
 	public String getSubjectName() {
 		return subjectName;
 	}
-
 	public void setSubjectName(String subjectName) {
 		this.subjectName = subjectName;
 	}
 	
+
 }
