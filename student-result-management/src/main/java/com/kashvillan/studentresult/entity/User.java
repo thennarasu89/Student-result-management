@@ -30,7 +30,17 @@ public class User implements UserDetails {
 
     private boolean enabled;
 
-    @Override
+    private boolean passwordResetrequired;
+
+	public boolean isPasswordResetrequired() {
+		return passwordResetrequired;
+	}
+
+	public void setPasswordResetrequired(boolean passwordResetrequired) {
+		this.passwordResetrequired = passwordResetrequired;
+	}
+
+	@Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role));
     }
