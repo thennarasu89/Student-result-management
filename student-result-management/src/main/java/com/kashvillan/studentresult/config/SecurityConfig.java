@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.kashvillan.studentresult.repositories.UserRepository;
+import com.kashvillan.studentresult.security.PasswordResetFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -30,15 +31,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-    	http
-    	  .csrf(csrf -> csrf.disable())
-    	  .authorizeHttpRequests(auth -> auth
-    	      .requestMatchers("/students/**").hasRole("ADMIN")
-    	      .requestMatchers("/subject/**").hasAnyRole("ADMIN", "TEACHER")
-    	      .requestMatchers("/result/**").hasAnyRole("ADMIN", "TEACHER")
-    	      .anyRequest().authenticated()
-    	  )
-    	  .httpBasic();
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/user/change-password").authenticated()
+                    .anyRequest().authenticated()
+            )
+            .httpBasic(basic -> {})
+            .addFilterAfter(
+                    new PasswordResetFilter(),
+                    org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class
+            );
 
         return http.build();
     }
