@@ -3,19 +3,29 @@ package com.kashvillan.studentresult.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.kashvillan.studentresult.dto.StudentRequestDto;
 import com.kashvillan.studentresult.dto.StudentResponseDto;
 import com.kashvillan.studentresult.entity.Student;
+import com.kashvillan.studentresult.entity.User;
 import com.kashvillan.studentresult.repositories.StudentRepository;
+import com.kashvillan.studentresult.repositories.UserRepository;
 import com.kashvillan.studentresult.service.StudentService;
+import com.kashvillan.studentresult.util.PasswordGenerator;
 @Service
 public class StudentServiceImpl implements StudentService{
 	private final StudentRepository studentRepository;
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 	
-	public StudentServiceImpl(StudentRepository studentRepository) {
+	public StudentServiceImpl(StudentRepository studentRepository,
+			UserRepository userRepository,
+			PasswordEncoder passwordEncoder) {
 		this.studentRepository = studentRepository;
+		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 	
 	@Override
@@ -29,10 +39,24 @@ public class StudentServiceImpl implements StudentService{
 		}
 		Student saved = studentRepository.save(student);
 		
+		String tempPassword = PasswordGenerator.generate();
+		
+		User user = new User();
+		user.setUserId(saved.getRegNo());
+		user.setUsername("student@" + saved.getRegNo());
+		user.setPassword(passwordEncoder.encode(tempPassword));
+		user.setRole("STUDENT");
+		user.setEnabled(true);
+		user.setPasswordResetrequired(true);
+		
+		userRepository.save(user);
+		
 		StudentResponseDto response =  new StudentResponseDto();
 		response.setRegNo(saved.getRegNo());
 		response.setName(saved.getName());
 		response.setAssignedClass(saved.getAssignedClass());
+//		response.setUsername(user.getUsername());
+//		response.setTempPassword(tempPassword);                                                  
 		
 		return response;
 	}

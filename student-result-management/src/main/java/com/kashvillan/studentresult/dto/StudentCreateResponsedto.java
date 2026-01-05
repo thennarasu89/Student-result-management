@@ -1,10 +1,11 @@
 package com.kashvillan.studentresult.dto;
 
-public class StudentResponseDto {
+public class StudentCreateResponsedto {
 	private Long regNo;
 	private String name;
 	private String assignedClass;
-	
+	private String username;
+	private String tempPassword;
 	public Long getRegNo() {
 		return regNo;
 	}
@@ -23,6 +24,19 @@ public class StudentResponseDto {
 	public void setAssignedClass(String assignedClass) {
 		this.assignedClass = assignedClass;
 	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getTempPassword() {
+		return tempPassword;
+	}
+	public void setTempPassword(String tempPassword) {
+		this.tempPassword = tempPassword;
+	}
 	
-	
+	  
+
 }

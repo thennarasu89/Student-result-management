@@ -4,8 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 
 import com.kashvillan.studentresult.repositories.UserRepository;
 import com.kashvillan.studentresult.security.PasswordResetFilter;
@@ -18,6 +20,11 @@ public class SecurityConfig {
 
     public SecurityConfig(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+    
+    @Bean
+    public PasswordResetFilter passwordResetFilter() {
+    	return new PasswordResetFilter();
     }
 
     @Bean
@@ -39,8 +46,8 @@ public class SecurityConfig {
             )
             .httpBasic(basic -> {})
             .addFilterAfter(
-                    new PasswordResetFilter(),
-                    org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class
+                    passwordResetFilter(),
+                  SecurityContextHolderFilter.class
             );
 
         return http.build();
