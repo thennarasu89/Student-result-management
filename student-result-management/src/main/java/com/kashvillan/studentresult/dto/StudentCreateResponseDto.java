@@ -1,6 +1,6 @@
 package com.kashvillan.studentresult.dto;
 
-public class StudentCreateResponsedto {
+public class StudentCreateResponseDto {
 	private Long regNo;
 	private String name;
 	private String assignedClass;

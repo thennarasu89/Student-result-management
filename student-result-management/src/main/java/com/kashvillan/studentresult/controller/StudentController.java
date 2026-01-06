@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kashvillan.studentresult.dto.StudentCreateResponseDto;
 import com.kashvillan.studentresult.dto.StudentRequestDto;
 import com.kashvillan.studentresult.dto.StudentResponseDto;
 import com.kashvillan.studentresult.service.StudentService;
@@ -25,7 +26,7 @@ public class StudentController {
 	}
 
 	@PostMapping("/create")
-	public StudentResponseDto CreateStudent(@Valid @RequestBody StudentRequestDto request) {
+	public StudentCreateResponseDto CreateStudent(@Valid @RequestBody StudentRequestDto request) {
 		return studentService.createStudent(request);
 	}
 	@GetMapping("/{regNo}")

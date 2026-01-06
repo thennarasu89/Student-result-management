@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.kashvillan.studentresult.dto.StudentCreateResponseDto;
 import com.kashvillan.studentresult.dto.StudentRequestDto;
 import com.kashvillan.studentresult.dto.StudentResponseDto;
 import com.kashvillan.studentresult.entity.Student;
@@ -29,7 +30,7 @@ public class StudentServiceImpl implements StudentService{
 	}
 	
 	@Override
-	public StudentResponseDto createStudent(StudentRequestDto request) {
+	public StudentCreateResponseDto createStudent(StudentRequestDto request) {
 		Student student = new Student();
 		student.setRegNo(request.getRegNo());
 		student.setName(request.getName());
@@ -51,12 +52,12 @@ public class StudentServiceImpl implements StudentService{
 		
 		userRepository.save(user);
 		
-		StudentResponseDto response =  new StudentResponseDto();
+		StudentCreateResponseDto response =  new StudentCreateResponseDto();
 		response.setRegNo(saved.getRegNo());
 		response.setName(saved.getName());
 		response.setAssignedClass(saved.getAssignedClass());
-//		response.setUsername(user.getUsername());
-//		response.setTempPassword(tempPassword);                                                  
+		response.setUsername(user.getUsername());
+		response.setTempPassword(tempPassword);                                                  
 		
 		return response;
 	}
