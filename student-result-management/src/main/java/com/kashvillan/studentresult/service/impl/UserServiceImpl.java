@@ -9,9 +9,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.kashvillan.studentresult.dto.PasswordRequestDto;
+import com.kashvillan.studentresult.dto.UserCreateResponseDto;
 import com.kashvillan.studentresult.entity.User;
 import com.kashvillan.studentresult.repositories.UserRepository;
 import com.kashvillan.studentresult.service.UserService;
+import com.kashvillan.studentresult.util.PasswordGenerator;
 @Service
 public class UserServiceImpl implements UserService {
 	
@@ -21,6 +23,63 @@ public class UserServiceImpl implements UserService {
 	public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, PasswordEncoder passwordEncoder2) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+	}
+	
+	
+	@Override
+	public UserCreateResponseDto createStudentUser(String username, String assignedClass) {
+		if (userRepository.findByUsername(username).isPresent()) {
+		    throw new RuntimeException("User already exists with username " + username);
+		}
+		String tempPassword = PasswordGenerator.generate();
+		
+		User user = new User();
+		user.setUsername(username);
+		user.setPassword(passwordEncoder.encode(tempPassword));
+		user.setRole("STUDENT");
+		user.setAssignedClass(assignedClass);
+		user.setEnabled(true);
+		user.setPasswordResetrequired(true);
+		
+		userRepository.save(user);
+		
+		UserCreateResponseDto response = new UserCreateResponseDto();
+		response.setUsername(username);
+		response.setTempPassword(tempPassword);
+		response.setRole("STUDENT");
+		response.setAssignedClass(assignedClass);
+		
+		return response;
+	}
+	
+	@Override
+	public UserCreateResponseDto createTeacherUser(String username, String assignedClass) {
+		if(userRepository.findByUsername(username).isPresent()) {
+			throw new RuntimeException("user with same uysername already present");
+			
+		}
+		
+		String tempPassword = PasswordGenerator.generate();
+		
+		User user = new User();
+		user.setUsername(username);
+		user.setPassword(passwordEncoder.encode(tempPassword));
+		user.setRole("TEACHER");
+		user.setAssignedClass(assignedClass);
+		user.setPasswordResetrequired(true);
+		user.setEnabled(true);
+		
+		userRepository.save(user);
+		
+		
+		UserCreateResponseDto response = new UserCreateResponseDto();
+		response.setUsername(username);
+		response.setTempPassword(tempPassword);
+		response.setRole("TEACHER");
+		response.setAssignedClass(assignedClass);
+		
+		return response;
+		
 	}
 	
 	@Override

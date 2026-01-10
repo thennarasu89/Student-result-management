@@ -2,6 +2,7 @@ package com.kashvillan.studentresult.security;
 
 import java.io.IOException;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -37,9 +38,9 @@ public class PasswordResetFilter extends OncePerRequestFilter {
 				.getAuthentication();
 
 
-		if(authentication == null || !authentication.isAuthenticated()) {
+		if(authentication == null || authentication instanceof AnonymousAuthenticationToken ) {
 			System.out.println("its zero");
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); 
 			return;
 		}
 		String username = authentication.getName();
@@ -53,7 +54,7 @@ public class PasswordResetFilter extends OncePerRequestFilter {
 			
 		}
 
-		if(!"STUDENT".equals(user.getRole())) {
+		if("ADMIN".equals(user.getRole())) {
 			System.out.println("its two");
 			filterChain.doFilter(request, response);
 			return;

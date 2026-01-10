@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.kashvillan.studentresult.dto.StudentCreateResponseDto;
+import com.kashvillan.studentresult.dto.UserCreateResponseDto;
 import com.kashvillan.studentresult.dto.StudentRequestDto;
 import com.kashvillan.studentresult.dto.StudentResponseDto;
 import com.kashvillan.studentresult.entity.Student;
@@ -14,52 +14,39 @@ import com.kashvillan.studentresult.entity.User;
 import com.kashvillan.studentresult.repositories.StudentRepository;
 import com.kashvillan.studentresult.repositories.UserRepository;
 import com.kashvillan.studentresult.service.StudentService;
+import com.kashvillan.studentresult.service.UserService;
 import com.kashvillan.studentresult.util.PasswordGenerator;
 @Service
 public class StudentServiceImpl implements StudentService{
 	private final StudentRepository studentRepository;
-	private final UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
+	private final UserService userService;
 	
 	public StudentServiceImpl(StudentRepository studentRepository,
-			UserRepository userRepository,
-			PasswordEncoder passwordEncoder) {
+			UserService userService) {
 		this.studentRepository = studentRepository;
-		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
+		this.userService = userService;
 	}
 	
 	@Override
-	public StudentCreateResponseDto createStudent(StudentRequestDto request) {
+	public UserCreateResponseDto createStudent(StudentRequestDto request) {
+		if(studentRepository.existsById(request.getRegNo())) {
+			throw new RuntimeException("Student already exixt with is register number");
+		}
 		Student student = new Student();
 		student.setRegNo(request.getRegNo());
 		student.setName(request.getName());
 		student.setAssignedClass(request.getAssignedClass());;
-		if(studentRepository.existsById(request.getRegNo())) {
-			throw new RuntimeException("Student already exixt with is register number");
-		}
+		
 		Student saved = studentRepository.save(student);
 		
-		String tempPassword = PasswordGenerator.generate();
+		String username = "student@" + request.getRegNo();
 		
-		User user = new User();
-		user.setUserId(saved.getRegNo());
-		user.setUsername("student@" + saved.getRegNo());
-		user.setPassword(passwordEncoder.encode(tempPassword));
-		user.setRole("STUDENT");
-		user.setEnabled(true);
-		user.setPasswordResetrequired(true);
+		UserCreateResponseDto userResponse = userService.createStudentUser(
+				username,
+				request.getAssignedClass()
+				);                                                  
 		
-		userRepository.save(user);
-		
-		StudentCreateResponseDto response =  new StudentCreateResponseDto();
-		response.setRegNo(saved.getRegNo());
-		response.setName(saved.getName());
-		response.setAssignedClass(saved.getAssignedClass());
-		response.setUsername(user.getUsername());
-		response.setTempPassword(tempPassword);                                                  
-		
-		return response;
+		return userResponse;
 	}
 	
 	@Override

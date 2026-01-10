@@ -1,8 +1,12 @@
 package com.kashvillan.studentresult.service.impl;
 
+import org.springframework.beans.factory.BeanCreationNotAllowedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.kashvillan.studentresult.dto.ResultRequestDto;
@@ -10,6 +14,7 @@ import com.kashvillan.studentresult.dto.ResultResponseDto;
 import com.kashvillan.studentresult.entity.Result;
 import com.kashvillan.studentresult.entity.Student;
 import com.kashvillan.studentresult.entity.Subject;
+import com.kashvillan.studentresult.entity.User;
 import com.kashvillan.studentresult.repositories.ResultRepository;
 import com.kashvillan.studentresult.repositories.StudentRepository;
 import com.kashvillan.studentresult.repositories.SubjectRepository;
@@ -32,13 +37,32 @@ public class ResultServiceImpl implements ResultService {
 
 	    @Override
 	    public ResultResponseDto addResult(ResultRequestDto request) {
-
+	    	
+	    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    	
+	    	User loggedInUser = (User) authentication.getPrincipal();
+	    	
 	        Student student = studentRepository.findById(request.getStudentRegNo())
-	                .orElseThrow();
+	                .orElseThrow(() -> new RuntimeException("Student not found"));
 
 	        Subject subject = subjectRepository.findById(request.getSubjectCode())
-	                .orElseThrow();
-
+	                .orElseThrow(() -> new RuntimeException("Subject Not Found"));
+	        if("ADMIN".equals(loggedInUser.getRole())){
+	        	
+	        }
+	        else if("TEACHER".equals(loggedInUser.getRole())) {
+	        	String teacherClass = loggedInUser.getAssignedClass();
+	        	String studentClass = student.getAssignedClass();
+	        	
+	        	if(!studentClass.equals(teacherClass)) {
+	        		throw new AccessDeniedException("You are not allowed to access this class");
+	        	}
+	        	
+	        }
+	        else {
+				throw new AccessDeniedException("You're not allowed to acess this ");
+			}
+	        
 	        Result result = new Result();
 	        result.setStudent(student);
 	        result.setSubject(subject);
@@ -55,13 +79,30 @@ public class ResultServiceImpl implements ResultService {
 
 	        return response;
 	    }
+	    
 
 	    @Override
-	    public List<ResultResponseDto> getResultByStudent(Long regNo) {
+	    public List<ResultResponseDto> getResultByStudent(Long regNo) throws AccessDeniedException {
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        if(authentication != null && authentication.isAuthenticated()) {
+	        	Object principal = authentication.getPrincipal();
+	        	
+	        	if(principal instanceof User user) {
+	        		if("STUDENT".equals(user.getRole())) {
+	        			String username = user.getUsername();
+	        			Long currentRegNo = Long.parseLong(username.split("@")[1]);
+	        			
+	        			if(!currentRegNo.equals(regNo)) {
+	        				throw new AccessDeniedException("YOU CAN PNLY VEIW YOUR RESULT");
+	        				
+	        			}
+	        		}
+	        	}
+	        }
 	        return resultRepository.findByStudentRegNo(regNo)
-	                .stream()
-	                .map(this::mapToResponse)
-	                .collect(Collectors.toList());
+	        		.stream()
+	        		.map(this::mapToResponse)
+	        		.collect(Collectors.toList());
 	    }
 
 	    @Override

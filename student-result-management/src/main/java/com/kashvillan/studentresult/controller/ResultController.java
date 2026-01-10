@@ -2,6 +2,7 @@ package com.kashvillan.studentresult.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,17 +24,21 @@ public class ResultController {
 	public ResultController(ResultService resultService) {
 	    this.resultService = resultService;
 	}
-
+	
 	@PostMapping("/add")
 	public ResultResponseDto addResult(@Valid @RequestBody ResultRequestDto request) {
 		return resultService.addResult(request);
 	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')")
 	@GetMapping("/student/{regNo}")
 	public List<ResultResponseDto> getResultsByStudent(
 	        @PathVariable Long regNo) {
 
 	    return resultService.getResultByStudent(regNo);
 	}
+	
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
 	@GetMapping("/subject/{subCode}")
 	public List<ResultResponseDto> getResultsBySubject(
 	        @PathVariable Long subCode) {

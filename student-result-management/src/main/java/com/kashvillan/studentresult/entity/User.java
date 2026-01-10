@@ -3,6 +3,7 @@ package com.kashvillan.studentresult.entity;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.context.annotation.EnableLoadTimeWeaving;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,9 +17,8 @@ import jakarta.persistence.Table;
 @Table(name = "users")
 public class User implements UserDetails {
 
-    @Id
-    private Long userId;
 
+	@Id
     @Column(unique = true, nullable = false)
     private String username;
 
@@ -27,10 +27,22 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String role;
-
+    
+    private String assignedClass;
+    
+    
     private boolean enabled;
 
     private boolean passwordResetrequired;
+    
+    public String getAssignedClass() {
+		return assignedClass;
+	}
+
+	public void setAssignedClass(String assignedClass) {
+		this.assignedClass = assignedClass;
+	}
+
 
 	public boolean isPasswordResetrequired() {
 		return passwordResetrequired;
@@ -75,16 +87,6 @@ public class User implements UserDetails {
         return enabled;
     }
 
- 
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -104,4 +106,6 @@ public class User implements UserDetails {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+    
+        
 }
