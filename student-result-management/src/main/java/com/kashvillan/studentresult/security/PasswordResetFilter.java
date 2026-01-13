@@ -30,8 +30,17 @@ public class PasswordResetFilter extends OncePerRequestFilter {
 			HttpServletResponse response,
 			FilterChain filterChain
 			) throws ServletException, IOException{
-		System.out.println(">>> PasswordResetFilter HIT for URI: " + request.getRequestURI());
-
+		String requestUri = request.getRequestURI();
+		System.out.println(">>>password reset filyer HIT" + requestUri);
+		
+		if(requestUri.startsWith("/swagger-ui")||
+				requestUri.startsWith("/v3/api-docs")||
+				requestUri.equals("/auth/login")||
+				requestUri.equals("/user/change-password")) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+		
 		Authentication authentication = 
 				SecurityContextHolder
 				.getContext()
@@ -40,7 +49,7 @@ public class PasswordResetFilter extends OncePerRequestFilter {
 
 		if(authentication == null || authentication instanceof AnonymousAuthenticationToken ) {
 			System.out.println("its zero");
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); 
+			filterChain.doFilter(request, response);
 			return;
 		}
 		String username = authentication.getName();
@@ -59,20 +68,14 @@ public class PasswordResetFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 			return;
 		}
-		if(!user.isPasswordResetrequired()) {
-			System.out.println("its three");
-			filterChain.doFilter(request, response);
+		if(user.isPasswordResetrequired()) {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			response.getWriter().write("password reset is required");
 			return;
 		}
-		String requestUri = request.getRequestURI();
 		
-		if(requestUri.equals("/user/change-password")) {
-			System.out.println("its four");
-			filterChain.doFilter(request, response);
-			return;
-		}
-		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-		response.getWriter().write("password reset required before accessing the system");
+		
+		filterChain.doFilter(request, response);
 	}
 
 }

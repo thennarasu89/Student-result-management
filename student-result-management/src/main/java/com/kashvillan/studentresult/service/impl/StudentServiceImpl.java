@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kashvillan.studentresult.dto.UserCreateResponseDto;
 import com.kashvillan.studentresult.dto.StudentRequestDto;
@@ -26,7 +27,7 @@ public class StudentServiceImpl implements StudentService{
 		this.studentRepository = studentRepository;
 		this.userService = userService;
 	}
-	
+	@Transactional
 	@Override
 	public UserCreateResponseDto createStudent(StudentRequestDto request) {
 		if(studentRepository.existsById(request.getRegNo())) {

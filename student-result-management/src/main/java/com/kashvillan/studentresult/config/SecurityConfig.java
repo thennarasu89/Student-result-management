@@ -1,5 +1,8 @@
 package com.kashvillan.studentresult.config;
 
+import java.text.Normalizer.Form;
+import java.util.concurrent.ForkJoinPool;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -46,13 +49,17 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/user/change-password").authenticated()
+                    .requestMatchers("/user/change-password",
+                    		"/swagger-ui/**",
+                    		"/v3/api-docs/**",
+                    		"/auth/login").authenticated()
                     .anyRequest().authenticated()
-            )
-            .httpBasic(basic -> {})
-            .addFilterAfter(
+            ).formLogin(form -> form.permitAll());
+        
+            
+            http.addFilterAfter(
                    passwordResetFilter(),
-                  BasicAuthenticationFilter.class
+                  UsernamePasswordAuthenticationFilter.class
               );
 
         return http.build();

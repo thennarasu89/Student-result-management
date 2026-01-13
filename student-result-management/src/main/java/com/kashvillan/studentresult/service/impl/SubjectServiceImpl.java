@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kashvillan.studentresult.dto.SubjectRequestDto;
 import com.kashvillan.studentresult.dto.SubjectResponseDto;
@@ -19,7 +20,8 @@ public class SubjectServiceImpl implements SubjectService {
 	public SubjectServiceImpl(SubjectRepository subjectRepository) {
 		this.subjectRepository = subjectRepository;
 	}
-	 
+	
+	@Transactional
 	@Override
 	public SubjectResponseDto createSubject(SubjectRequestDto request) {
 		 Subject subject = new Subject();

@@ -1,6 +1,7 @@
 package com.kashvillan.studentresult.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kashvillan.studentresult.dto.TeacherRequestDto;
 import com.kashvillan.studentresult.dto.UserCreateResponseDto;
@@ -20,6 +21,7 @@ public class TeacherServiceImpl implements TeacherService {
 		this.userService = userService;
 		
 	}
+	@Transactional
 	@Override
 	public UserCreateResponseDto createTeacher(TeacherRequestDto request) {
 		if(teacherRepository.existsById(request.getTeacherId())) {

@@ -1,5 +1,6 @@
 package com.kashvillan.studentresult.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ public class TeacherController {
 		this.teacherService = teacherService;
 		
 	}
-
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/create")
 	public UserCreateResponseDto createTeacher(@Valid @RequestBody TeacherRequestDto request) {
 		return teacherService.createTeacher(request);
