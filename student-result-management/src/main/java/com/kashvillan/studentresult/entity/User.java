@@ -3,7 +3,6 @@ package com.kashvillan.studentresult.entity;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.context.annotation.EnableLoadTimeWeaving;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,6 +1,5 @@
 package com.kashvillan.studentresult.service.impl;
 
-import org.springframework.beans.factory.BeanCreationNotAllowedException;
 import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;

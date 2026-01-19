@@ -3,7 +3,6 @@ package com.kashvillan.studentresult.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,12 +10,9 @@ import com.kashvillan.studentresult.dto.UserCreateResponseDto;
 import com.kashvillan.studentresult.dto.StudentRequestDto;
 import com.kashvillan.studentresult.dto.StudentResponseDto;
 import com.kashvillan.studentresult.entity.Student;
-import com.kashvillan.studentresult.entity.User;
 import com.kashvillan.studentresult.repositories.StudentRepository;
-import com.kashvillan.studentresult.repositories.UserRepository;
 import com.kashvillan.studentresult.service.StudentService;
 import com.kashvillan.studentresult.service.UserService;
-import com.kashvillan.studentresult.util.PasswordGenerator;
 @Service
 public class StudentServiceImpl implements StudentService{
 	private final StudentRepository studentRepository;
@@ -38,7 +34,7 @@ public class StudentServiceImpl implements StudentService{
 		student.setName(request.getName());
 		student.setAssignedClass(request.getAssignedClass());;
 		
-		Student saved = studentRepository.save(student);
+		 studentRepository.save(student);
 		
 		String username = "student@" + request.getRegNo();
 		
